@@ -12,8 +12,8 @@ export default async function(req, reply){
     const rx = req.query.rx && req.query.rx < 4 ? req.query.rx : 0
     const limit = req.query.limit && req.query.limit < 32 ? req.query.limit : 7
 
-    const result = await request(`SELECT global from ranks WHERE user = ${req.query.id} AND mode = ${mode} AND rx = ${rx}`)
-    if(result.length < 1) return reply.code(404).send({
+    const result = (await request(`SELECT global from ranks WHERE user = ${req.query.id} AND mode = ${mode} AND rx = ${rx}`))[0]
+    if(!result) return reply.code(404).send({
         message: "No data found",
         query: req.query
     })
@@ -25,7 +25,5 @@ export default async function(req, reply){
         ranks.push(ranking[i])
     }
 
-    return {
-        ranks
-    }
+    return { ranks }
 }

@@ -20,8 +20,6 @@ export async function connect(){
 }
 
 export async function request(query){
-    new Logger().addTimestamp("hh:mm:ss").changeTag("Database").yellow()
-    .send(`Database: ${query}`)
-
+    new Logger().addTimestamp("hh:mm:ss").changeTag("Database").yellow().send(query)
     return await con.awaitQuery(query)
 }
