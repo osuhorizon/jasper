@@ -1,36 +1,27 @@
-const mysql = require('mysql')
-const red = require('redis')
-const config = require('../config.json')
+import Logger from "cutesy.js"
+import mysql from "mysql-await"
+import red from "async-redis"
+import { db } from "../config.js"
 
-module.exports = {
+const con = mysql.createConnection({
+    host: db.host,
+    user: db.user,
+    password: db.password,
+    database: db.database
+})
 
-    connect: async function(){
-        con = mysql.createConnection({
-            host: config.db.host,
-            user: config.db.user,
-            password: config.db.password,
-            database: config.db.database
-        })
-        con.connect(function(err) {
-            if (err) throw err
-        })
+const redis = red.createClient({
+    port: 6379,
+    host: "localhost"
+})
 
-        redis = red.createClient({
-            port: 6379,
-            host: "localhost"
-        })
-    },
+export async function connect(){
+    await con.connect()
+}
 
-    request : async function(query){
-        if(config.debug) console.log("Database: " + query)
-        return new Promise((resolve, reject) => {
-            con.query(query, (err, res) => {
-                if(err){
-                    reject(res)
-                    throw err;
-                }
-                resolve(res);
-            });
-        })
-    }
+export async function request(query){
+    new Logger().addTimestamp("hh:mm:ss").changeTag("Database").yellow()
+    .send(`Database: ${query}`)
+
+    return await con.awaitQuery(query)
 }

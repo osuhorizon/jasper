@@ -3,4 +3,7 @@ async function log(req){
     console.log(`${time} | ${req.headers['x-forwarded-for']} | ${req.originalUrl}`);
 }
 
-module.exports = log;
+import Logger from "cutesy.js";
+
+
+export default new Logger().addTimestamp("hh:mm:ss").green()

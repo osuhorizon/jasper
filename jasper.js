@@ -1,22 +1,20 @@
-const express = require("express");
-const app = express();
-const {base, port} = require("./config.json");
-const { connect, request } = require("./helper/database.js");
-const log = require("./helper/log.js");
+import Logger from "cutesy.js"
+import { fastify as f } from "fastify"
+import { connect } from "./helper/database.js"
+import api from "./routes/api.js"
+import { port } from "./config.js"
 
-connect()
+const fastify = f({trustProxy: true })
+const logger = new Logger().addTimestamp("hh:mm:ss").green()
+.send("Starting Jasper v2")
 
-app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
+await connect()
 
-app.get(base, async (req, res) => {
-    log(req)
-    res.json({status: 200, message: "Jasper the entirely public JavaScript API for osu!Horizon", version: "1.0.0", route : "v2"});
+fastify.addHook('onResponse', async (req, reply) => {
+    logger.send(`${req.ips[req.ips.length - 1]} -> ${req.url} (${reply.statusCode}) - ${reply.getResponseTime().toFixed(2)}ms`)
 })
+
+fastify.register(api, { prefix: '/api/v2' })
 
 app.get(base + "performance", async (req, res) => {
     log(req)
@@ -61,11 +59,11 @@ app.get(base + "scores/recent", async (req, res) => {
   if(!req.query.id) return res.json({code: 400, message: "Missing required parameter", required: "id", optional: "mode, rx, limit, completed", mode: "0-3", rx: "0-3", limit: "1-50", completed: "0-3"});
   req.query.mode = req.query.m ? req.query.m : req.query.mode
   const mode = req.query.mode && req.query.mode < 4 ? req.query.mode : 0
-  const rx = req.query.rx && req.query.rx < 4 ? req.query.rx : 0
+  const rx = req.query.rx && req.query.rx < 3 ? req.query.rx : 0
   const limit = req.query.limit && req.query.limit < 51 ? req.query.limit : 50
   const completed = req.query.completed && req.query.completed < 4 ? req.query.completed : 0
 
-  const relax = ['', '_relax', '_ap', '_v2']
+  const relax = ['', '_relax', '_ap']
   const modes = ["std", "taiko", "ctb", "mania"]
 
   const scores = await request(`SELECT s.id, s.beatmap_md5, s.score, s.max_combo, s.full_combo, s.mods, s.300_count, s.100_count, s.50_count, 

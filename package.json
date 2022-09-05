@@ -1,17 +1,26 @@
 {
   "name": "jasper",
   "version": "1.0.0",
-  "description": "",
+  "description": "the javascript api for osu!Horizon",
   "main": "jasper.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osuhorizon/jasper.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/osuhorizon/jasper/issues"
+  },
+  "homepage": "https://github.com/osuhorizon/jasper#readme",
   "dependencies": {
-    "express": "^4.17.2",
-    "mysql": "^2.18.1",
-    "redis": "^4.0.3"
+    "async-redis": "^2.0.0",
+    "cutesy.js": "^1.2.2",
+    "fastify": "^4.5.3",
+    "mysql-await": "^2.2.2"
   }
 }
