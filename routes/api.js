@@ -6,7 +6,7 @@ export default async function(fastify, opts){
     fastify.get('/', async (req, reply) =>{
         return {
             message: "Jasper the entirely public JavaScript API for osu!Horizon",
-            version: "1.0.0",
+            version: "2.0.0",
             route : "v2"
         }
     })

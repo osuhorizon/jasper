@@ -20,7 +20,7 @@ export default async function(req, reply){
 
     const ranks = []
 
-    const ranking = result.global.split(",")
+    const ranking = result.global.split(",").reverse()
     for(var i = 0; i < limit; i++){
         ranks.push(ranking[i])
     }

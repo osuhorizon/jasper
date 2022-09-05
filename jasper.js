@@ -97,6 +97,5 @@ fastify.register(api, { prefix: '/api/v2' })
 //   res.json({code: 200, scores: data});
 // })
 
-app.listen(port, () => {
-  console.log(`Jasper listening at http://localhost:${port}`);
-});
+await fastify.listen({ port })
+logger.send(`Jasper listening at http://localhost:${port}`)
