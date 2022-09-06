@@ -12,7 +12,7 @@ export default async function(req, reply){
     const rx = req.query.rx && req.query.rx < 4 ? req.query.rx : 0
     const limit = req.query.limit && req.query.limit < 32 ? req.query.limit : 7
 
-    const result = (await request(`SELECT global from ranks WHERE user = ${req.query.id} AND mode = ${mode} AND rx = ${rx}`))[0]
+    const result = (await request(`SELECT global from ranks WHERE user = ${req.query.id} AND mode = ${mode} AND relax = ${rx}`))[0]
     if(!result) return reply.code(404).send({
         message: "No data found",
         query: req.query
@@ -22,6 +22,7 @@ export default async function(req, reply){
 
     const ranking = result.global.split(",").reverse()
     for(var i = 0; i < limit; i++){
+        if(ranking[i] == null) return { ranks }
         ranks.push(ranking[i])
     }
 

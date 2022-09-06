@@ -2,6 +2,7 @@ import Logger from "cutesy.js"
 import { fastify as f } from "fastify"
 import { connect } from "./helper/database.js"
 import api from "./routes/api.js"
+import cron from "./cron/cron.js"
 import { port } from "./config.js"
 
 const fastify = f({trustProxy: true })
@@ -9,6 +10,7 @@ const logger = new Logger().addTimestamp("hh:mm:ss").green()
 .send("Starting Jasper v2")
 
 await connect()
+cron()
 
 fastify.addHook('onResponse', async (req, reply) => {
     logger.send(`${req.ips[req.ips.length - 1]} -> ${req.url} (${reply.statusCode}) - ${reply.getResponseTime().toFixed(2)}ms`)

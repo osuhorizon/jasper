@@ -6,12 +6,14 @@ export default async function(req, reply){
         query: req.query
     })
 
-    const status = await request(`SELECT current_status FROM users_stats WHERE id = ${req.query.id}`)
+    let status = await request(`SELECT current_status FROM users_stats WHERE id = ${req.query.id}`)
 
     if(status.length < 1) return reply.code(400).send({
         message: "User not found", 
         query: req.query
     })
+
+    if(status[0].current_status.startsWith("on")) status[0].current_status = "Idle " + status[0].current_status
 
     return { status: status[0].current_status }
 }

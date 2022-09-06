@@ -26,3 +26,12 @@ export async function request(query){
     new Logger().addTimestamp("hh:mm:ss").changeTag("Database").yellow().send(query)
     return await con.awaitQuery(query)
 }
+
+export async function get(key){
+    return await redis.get(key)
+}
+
+export async function zrange(key, start, end, scores){
+    if(scores) return await redis.zrange(key, start, end, "WITHSCORES")
+    return await redis.zrange(key, start, end)
+}
