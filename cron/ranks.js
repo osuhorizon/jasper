@@ -8,11 +8,11 @@ export default async function(){
         const modes = mod == 0 ?
         ['std', "taiko", "ctb", "mania"] : mod == 1 ?
         ['std', "taiko", "ctb"] :
-        ['std', "taiko"]
+        ['std']
     
         for(let mode in modes){
-            const userboard = await zrange(`ripple:leaderboard${mods[mod]}:${modes[mode]}`, 0, -1, false)
-            const scoreboard = await zrange(`ripple:leaderboard${mods[mod]}:${modes[mode]}`, 0, -1, true)
+            const userboard = (await zrange(`ripple:leaderboard${mods[mod]}:${modes[mode]}`, 0, -1, false)).reverse()
+            const scoreboard = (await zrange(`ripple:leaderboard${mods[mod]}:${modes[mode]}`, 0, -1, true)).reverse()
     
             const time = Math.round(Date.now() / 1000)
 
@@ -32,18 +32,17 @@ export default async function(){
                 if(check[0].country == 0){
                     list.insert = true
                 }
-        
-                list.newCol = !(parseInt(check[0].time) * 60 * 60 * 24 > time)
+                
+                list.newCol = time > parseInt(check[0].time) + 60 * 60 * 24
                 list.user = check[0]
         
                 return list
             }
-
         
             for(var i = 0; i < userboard.length; i++){
                 const user = userboard[i]
         
-                const pp = Math.floor(scoreboard[(i * 2) + 1])
+                const pp = Math.floor(scoreboard[i * 2])
 
                 const c = await check(user)
 
@@ -68,7 +67,7 @@ export default async function(){
     
             for(var c = 0; c < countries.length; c++){
                 const country = countries[c]
-                const users = await zrange(`ripple:leaderboard${mods[mod]}:${modes[mode]}:${country.code.toLowerCase()}`, 0, -1, false)
+                const users = (await zrange(`ripple:leaderboard${mods[mod]}:${modes[mode]}:${country.code.toLowerCase()}`, 0, -1, false)).reverse()
                 if(users.length == 0) continue;
                 
                 for(var i = 0; i < users.length; i++) {

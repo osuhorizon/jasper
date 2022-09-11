@@ -14,6 +14,6 @@ export default async function(req, reply){
     })
 
     if(status[0].current_status.startsWith("on")) status[0].current_status = "Idle " + status[0].current_status
-
+    else if(status[0].current_status == "") status[0].current_status = "Idle"
     return { status: status[0].current_status }
 }
