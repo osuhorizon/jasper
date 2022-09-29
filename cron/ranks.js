@@ -14,7 +14,7 @@ export default async function(){
             const userboard = (await zrange(`ripple:leaderboard${mods[mod]}:${modes[mode]}`, 0, -1, false)).reverse()
             const scoreboard = (await zrange(`ripple:leaderboard${mods[mod]}:${modes[mode]}`, 0, -1, true)).reverse()
     
-            const time = Math.round(Date.now() / 1000)
+            const time = Math.floor(Date.now() / 1000)
 
             async function check(u){
                 let list = {
@@ -33,7 +33,7 @@ export default async function(){
                     list.insert = true
                 }
                 
-                list.newCol = time > parseInt(check[0].time) + 60 * 60 * 24
+                list.newCol = (time > (parseInt(check[0].time) + 60 * 60 * 24))
                 list.user = check[0]
         
                 return list
@@ -63,6 +63,7 @@ export default async function(){
                 pps.push(pp)
 
                 await request(`UPDATE ranks SET global = "${globals.join(",")}", pp = "${pps.join(",")}" WHERE user = ${user} AND mode = ${mode} AND relax = ${mod}`)
+                if(c.newCol) await request(`UPDATE ranks SET time = ${time} WHERE user = ${user} AND mode = ${mode} AND relax = ${mod}`)
             }
     
             for(var c = 0; c < countries.length; c++){
