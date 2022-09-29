@@ -1,6 +1,7 @@
 import performance from "./performance.js"
 import status from "./status.js"
 import online from "./online.js"
+import stats from "./stats.js"
 
 export default async function(fastify, opts){
     fastify.get('/', async (req, reply) =>{
@@ -14,4 +15,5 @@ export default async function(fastify, opts){
     fastify.get('/performance', performance)
     fastify.get('/status', status)
     fastify.get('/online', online)
+    fastify.get('/stats', stats)
 }
